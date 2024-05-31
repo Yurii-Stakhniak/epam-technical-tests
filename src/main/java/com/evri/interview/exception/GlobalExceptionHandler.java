@@ -11,4 +11,14 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Object> handleCourierNotFoundException(CourierNotFoundException ex) {
         return ResponseEntity.notFound().build();
     }
+
+    @ExceptionHandler(IllegalCourierNameException.class)
+    public ResponseEntity<Object> handleIllegalCourierNameException(IllegalCourierNameException ex) {
+        return ResponseEntity.badRequest().build();
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<Object> handleIllegalCourierNameException(Exception ex) {
+        return ResponseEntity.internalServerError().build();
+    }
 }

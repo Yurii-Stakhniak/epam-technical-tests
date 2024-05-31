@@ -26,5 +26,4 @@ public class CourierController {
 
         return ResponseEntity.ok(courierService.updateCourier(courierId, courier));
     }
-
 }

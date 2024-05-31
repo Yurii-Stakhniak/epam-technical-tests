@@ -1,6 +1,7 @@
 package com.evri.interview.service;
 
 import com.evri.interview.exception.CourierNotFoundException;
+import com.evri.interview.exception.IllegalCourierNameException;
 import com.evri.interview.model.Courier;
 import com.evri.interview.model.CourierFullName;
 import com.evri.interview.repository.CourierEntity;
@@ -11,11 +12,11 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.evri.interview.validator.FullNameValidator.MIN_WORDS_COUNT_IN_FULL_NAME;
-
 @Service
 @AllArgsConstructor
 public class CourierService {
+
+    public static final int MIN_WORDS_COUNT_IN_FULL_NAME = 2;
 
     private CourierTransformer courierTransformer;
     private CourierRepository repository;
@@ -53,10 +54,18 @@ public class CourierService {
     }
 
     private CourierFullName getFullName(String name) {
+
+        if (name == null) {
+            throw new IllegalCourierNameException("Name can not be null");
+        }
+        String[] nameParts = name.split("\\s+", MIN_WORDS_COUNT_IN_FULL_NAME);
+
+        if (name.isEmpty() || nameParts.length < MIN_WORDS_COUNT_IN_FULL_NAME) {
+            throw new IllegalCourierNameException(String.format("Illegal courier full name: %s.\n Name can not be empty or less than two words", name));
+        }
         CourierFullName courierFullName = new CourierFullName();
-        String[] names = name.split("\\s+", MIN_WORDS_COUNT_IN_FULL_NAME);
-        courierFullName.setFirstName(names[0]);
-        courierFullName.setLastName(names[1]);
+        courierFullName.setFirstName(nameParts[0]);
+        courierFullName.setLastName(nameParts[1]);
         return courierFullName;
     }
 }
