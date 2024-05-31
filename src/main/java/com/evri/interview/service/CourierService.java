@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.evri.interview.validator.FullNameValidator.MIN_WORDS_COUNT_IN_FULL_NAME;
+
 @Service
 @AllArgsConstructor
 public class CourierService {
@@ -18,7 +20,20 @@ public class CourierService {
     private CourierTransformer courierTransformer;
     private CourierRepository repository;
 
-    public List<Courier> getAllCouriers() {
+    public List<Courier> getCouriers(boolean isActive) {
+        return isActive
+                ? getActiveCouriers()
+                : getAllCouriers();
+    }
+
+    private List<Courier> getActiveCouriers() {
+        return repository.findAllByActive(true)
+                .stream()
+                .map(courierTransformer::toCourier)
+                .collect(Collectors.toList());
+    }
+
+    private List<Courier> getAllCouriers() {
         return repository.findAll()
                 .stream()
                 .map(courierTransformer::toCourier)
@@ -39,7 +54,7 @@ public class CourierService {
 
     private CourierFullName getFullName(String name) {
         CourierFullName courierFullName = new CourierFullName();
-        String[] names = name.split("\\s+", 2);
+        String[] names = name.split("\\s+", MIN_WORDS_COUNT_IN_FULL_NAME);
         courierFullName.setFirstName(names[0]);
         courierFullName.setLastName(names[1]);
         return courierFullName;

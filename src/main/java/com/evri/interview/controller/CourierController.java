@@ -16,9 +16,9 @@ public class CourierController {
     private CourierService courierService;
 
     @GetMapping()
-    public ResponseEntity<List<Courier>> getAllCouriers() {
+    public ResponseEntity<List<Courier>> getAllCouriers(@RequestParam(name = "isActive", defaultValue = "false") boolean isActive) {
 
-        return ResponseEntity.ok(courierService.getAllCouriers());
+        return ResponseEntity.ok(courierService.getCouriers(isActive));
     }
 
     @PutMapping("/{courierId}")
