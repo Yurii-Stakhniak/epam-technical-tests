@@ -7,11 +7,13 @@ import com.evri.interview.model.CourierFullName;
 import com.evri.interview.repository.CourierEntity;
 import com.evri.interview.repository.CourierRepository;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @AllArgsConstructor
 public class CourierService {
@@ -28,6 +30,7 @@ public class CourierService {
     }
 
     private List<Courier> getActiveCouriers() {
+        log.debug("Fetching the list of all active couriers");
         return repository.findAllByActive(true)
                 .stream()
                 .map(courierTransformer::toCourier)
@@ -35,6 +38,7 @@ public class CourierService {
     }
 
     private List<Courier> getAllCouriers() {
+        log.debug("Fetching the list of all couriers");
         return repository.findAll()
                 .stream()
                 .map(courierTransformer::toCourier)
@@ -42,6 +46,7 @@ public class CourierService {
     }
 
     public Courier updateCourier(Long courierId, Courier courier) {
+        log.debug("Performing update courier  with id {}", courierId);
 
         CourierEntity courierEntity = repository.findById(courierId)
                 .orElseThrow(() -> new CourierNotFoundException("Courier not found with id: " + courierId));
@@ -66,6 +71,7 @@ public class CourierService {
         CourierFullName courierFullName = new CourierFullName();
         courierFullName.setFirstName(nameParts[0]);
         courierFullName.setLastName(nameParts[1]);
+        log.debug("Courier: first name {}, last name {}", courierFullName.getFirstName(), courierFullName.getLastName());
         return courierFullName;
     }
 }
